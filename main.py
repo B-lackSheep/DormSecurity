@@ -1,5 +1,4 @@
 import logging
-import asyncio
 from apscheduler.schedulers.background import BackgroundScheduler
 from src.config import Config
 from src.database import get_db_session
