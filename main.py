@@ -37,13 +37,13 @@ async def on_forecast_request(message, floor: int = None, extra: int = 0):
         queue = service.get_forecast_by_floor(floor, limit=limit)
 
         response = f"Очередь на {floor} этаже ({limit} из {total_rooms}):\n"
-        for i, (room, last_date, notes) in enumerate(queue, 1):
+        for i, (room_number, last_date, notes) in enumerate(queue, 1):
             if last_date:
                 date_str = f"{last_date.day} {MONTHS_RU[last_date.month]}"
             else:
                 date_str = "ещё не дежурила"
             notes_str = f" — {notes}" if notes else ""
-            response += f"{i}. Комната {room.room_number} (была: {date_str}){notes_str}\n"
+            response += f"{i}. Комната {room_number} (была: {date_str}){notes_str}\n"
 
         await message.reply(response)
 

@@ -22,27 +22,27 @@ class CleaningService:
         return new_log
 
     def count_rooms_on_floor(self, floor: int) -> int:
-        return self.db.query(Room).filter(Room.floor == floor).count()
+        from sqlalchemy import text
+        row = self.db.execute(text("""
+            SELECT COUNT(DISTINCT r.id)
+            FROM rooms r
+            JOIN cleaning_log l ON l.room_id = r.id
+            WHERE r.floor = :floor
+        """), {"floor": floor}).scalar()
+        return row or 0
 
     def get_forecast_by_floor(self, floor: int, limit: int = 5):
-        from sqlalchemy import func
-        subq = (
-            self.db.query(CleaningLog.room_id, func.max(CleaningLog.date).label("last_date"))
-            .group_by(CleaningLog.room_id)
-            .subquery()
-        )
-        notes_subq = (
-            self.db.query(CleaningLog.room_id, CleaningLog.notes)
-            .join(subq, (CleaningLog.room_id == subq.c.room_id) & (CleaningLog.date == subq.c.last_date))
-            .subquery()
-        )
-        results = (
-            self.db.query(Room, subq.c.last_date, notes_subq.c.notes)
-            .outerjoin(subq, Room.id == subq.c.room_id)
-            .outerjoin(notes_subq, Room.id == notes_subq.c.room_id)
-            .filter(Room.floor == floor)
-            .order_by(subq.c.last_date.asc().nullsfirst())
-            .limit(limit)
-            .all()
-        )
-        return results
+        from sqlalchemy import text
+        rows = self.db.execute(text("""
+            SELECT r.room_number, MAX(l.date) AS last_date,
+                   (SELECT l2.notes FROM cleaning_log l2
+                    WHERE l2.room_id = r.id
+                    ORDER BY l2.date DESC LIMIT 1) AS notes
+            FROM rooms r
+            JOIN cleaning_log l ON l.room_id = r.id
+            WHERE r.floor = :floor
+            GROUP BY r.id, r.room_number
+            ORDER BY last_date ASC
+            LIMIT :limit
+        """), {"floor": floor, "limit": limit}).fetchall()
+        return [(row[0], row[1], row[2]) for row in rows]
