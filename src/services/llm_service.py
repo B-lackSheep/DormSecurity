@@ -1,14 +1,13 @@
-import google.generativeai as genai
+from google import genai
 import json
 import logging
 from ..config import Config
 
-genai.configure(api_key=Config.GEMINI_KEY)
-
 
 class LLMService:
     def __init__(self):
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model_id = "gemini-3.1-flash-lite-preview"
+        self.client = genai.Client(api_key=Config.GEMINI_KEY)
 
     def parse_logs_with_dates(self, text: str):
         prompt = f"""
@@ -33,8 +32,18 @@ class LLMService:
         {text}
         """
         try:
-            response = self.model.generate_content(prompt)
-            clean_json = response.text.strip().replace('```json', '').replace('```', '')
+            response = self.client.models.generate_content(
+                model=self.model_id,
+                contents=prompt
+            )
+
+            if not response.text:
+                return []
+
+            clean_json = response.text.strip()
+            if clean_json.startswith("```"):
+                clean_json = clean_json.split("```json")[-1].split("```")[0].strip()
+
             return json.loads(clean_json)
         except Exception as e:
             logging.error(f"LLM Parsing Error: {e}")
