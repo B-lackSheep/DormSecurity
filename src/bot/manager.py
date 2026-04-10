@@ -13,7 +13,10 @@ class TelegramManager:
 
         @self.app.on_message(filters.chat(Config.CHAT_ID) & (filters.command(["next", "очередь"]) | filters.regex(r"^\.очередь")))
         async def send_forecast(client, message):
-            await on_forecast_request(message)
+            parts = message.text.strip().split()
+            floor = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else None
+            extra = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 0
+            await on_forecast_request(message, floor, extra)
 
     def flush_buffer(self):
         data = "\n".join(self.buffer)

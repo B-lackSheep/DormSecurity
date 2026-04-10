@@ -12,19 +12,38 @@ bot_manager = TelegramManager()
 llm = LLMService()
 
 
-async def on_forecast_request(message):
+MONTHS_RU = [
+    "", "января", "февраля", "марта", "апреля",
+    "мая", "июня", "июля", "августа",
+    "сентября", "октября", "ноября", "декабря"
+]
+
+
+async def on_forecast_request(message, floor: int = None, extra: int = 0):
     with get_db_session() as session:
         service = CleaningService(session)
-        queue = service.get_forecast(limit=5)
 
-        if not queue:
-            await message.reply("База данных пока пуста.")
+        if floor is None:
+            await message.reply("Укажите этаж, например: /очередь 3")
             return
 
-        response = "Прогноз следующих дежурных:\n"
-        for i, (room, last_date) in enumerate(queue, 1):
-            date_str = last_date.strftime("%d.%m.%Y") if last_date else "еще не дежурила"
-            response += f"{i}. **Комната {room}** (была: {date_str})\n"
+        total_rooms = service.count_rooms_on_floor(floor)
+        if total_rooms == 0:
+            await message.reply(f"На {floor} этаже нет данных.")
+            return
+
+        limit = min(5 + extra, total_rooms)
+
+        queue = service.get_forecast_by_floor(floor, limit=limit)
+
+        response = f"Очередь на {floor} этаже ({limit} из {total_rooms}):\n"
+        for i, (room, last_date, notes) in enumerate(queue, 1):
+            if last_date:
+                date_str = f"{last_date.day} {MONTHS_RU[last_date.month]}"
+            else:
+                date_str = "ещё не дежурила"
+            notes_str = f" — {notes}" if notes else ""
+            response += f"{i}. Комната {room.room_number} (была: {date_str}){notes_str}\n"
 
         await message.reply(response)
 
