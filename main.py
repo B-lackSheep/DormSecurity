@@ -1,7 +1,5 @@
 import logging
 import asyncio
-import os
-import base64
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -62,11 +60,6 @@ async def daily_sync():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    session_b64 = os.getenv("SESSION_STRING")
-    if session_b64:
-        with open("sb_userbot.session", "wb") as f:
-            f.write(base64.b64decode(session_b64))
-
     scheduler = AsyncIOScheduler(timezone=Config.TZ)
     scheduler.add_job(daily_sync, 'cron', hour=23, minute=30)
     scheduler.start()

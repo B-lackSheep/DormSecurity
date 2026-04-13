@@ -1,9 +1,20 @@
+import os
 from pyrogram import Client, filters
+from pyrogram.storage import MemoryStorage
 from ..config import Config
 
 class TelegramManager:
     def __init__(self):
-        self.app = Client("sb_userbot", api_id=Config.API_ID, api_hash=Config.API_HASH)
+        session = os.getenv("SESSION_STRING")
+        if session:
+            self.app = Client(
+                "sb_userbot",
+                api_id=Config.API_ID,
+                api_hash=Config.API_HASH,
+                session_string=session
+            )
+        else:
+            self.app = Client("sb_userbot", api_id=Config.API_ID, api_hash=Config.API_HASH)
         self.buffer = []
 
     def setup_handlers(self, on_forecast_request):
