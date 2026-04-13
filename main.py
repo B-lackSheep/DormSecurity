@@ -78,5 +78,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
+@app.head("/")
+@app.post("/")
 def healthcheck():
     return {"status": "ok"}
