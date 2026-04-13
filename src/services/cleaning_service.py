@@ -16,6 +16,18 @@ class CleaningService:
             self.db.flush()
 
         parsed_date = datetime.strptime(duty_date, "%Y-%m-%d").date()
+
+        existing = self.db.query(CleaningLog).filter(
+            CleaningLog.room_id == room.id
+        ).first()
+
+        if existing:
+            if parsed_date > existing.date:
+                existing.date = parsed_date
+                existing.notes = notes
+                self.db.commit()
+            return existing
+
         new_log = CleaningLog(room_id=room.id, date=parsed_date, notes=notes)
         self.db.add(new_log)
         self.db.commit()

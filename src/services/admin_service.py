@@ -1,3 +1,4 @@
+import re
 from datetime import date
 from sqlalchemy.orm import Session
 from ..models.db_models import Room, CleaningLog
@@ -25,20 +26,49 @@ class AdminService:
         self.db.commit()
         return f"Обновлено: {room_number} теперь имеет дату {new_date}"
 
-    async def sync_history(self, bot_manager, limit: int = 100):
+    async def sync_history(self, bot_manager, limit: int = 195):
         messages = []
         async for msg in bot_manager.app.get_chat_history(Config.CHAT_ID, limit=limit):
-            if msg.text:
-                messages.append(f"[{msg.date}] {msg.text}")
+            if not msg.text:
+                continue
+            text = msg.text.strip()
+            if text.startswith('/') or text.startswith('.'):
+                continue
+            if text.startswith('Очередь на '):
+                continue
+            date_str = msg.date.strftime('%Y-%m-%d %H:%M:%S')
+            for line in text.splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                if line.startswith('Очередь на '):
+                    continue
+                if re.match(r'^\d+\.\s', line) and 'была:' in line:
+                    continue
+                messages.append(f"[{date_str}] {line}")
 
         if not messages:
             print("Сообщений в чате не найдено.")
             return 0
 
-        parsed = LLMService().parse_logs_with_dates("\n".join(messages))
+        print(f"Найдено сообщений о дежурствах: {len(messages)}, отправляю в LLM батчами...")
+
+        llm = LLMService()
         service = CleaningService(self.db)
+        batch_size = 15
         count = 0
-        for entry in parsed:
-            if service.save_duty(entry['room'], entry['date'], entry['notes']):
-                count += 1
+
+        for i in range(0, len(messages), batch_size):
+            batch = messages[i:i + batch_size]
+            parsed = llm.parse_logs_with_dates("\n".join(batch))
+            if not parsed:
+                print(f"Батч {i // batch_size + 1}: LLM не нашёл дежурств или ошибка")
+                continue
+            batch_count = 0
+            for entry in parsed:
+                if service.save_duty(entry['room'], entry['date'], entry['notes']):
+                    count += 1
+                    batch_count += 1
+            print(f"Батч {i // batch_size + 1}: LLM нашёл {len(parsed)}, сохранено/обновлено {batch_count}")
+
         return count
