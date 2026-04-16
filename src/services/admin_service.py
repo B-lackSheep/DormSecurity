@@ -1,4 +1,5 @@
 import re
+import time
 from datetime import date
 from sqlalchemy.orm import Session
 from ..models.db_models import Room, CleaningLog
@@ -66,9 +67,11 @@ class AdminService:
                 continue
             batch_count = 0
             for entry in parsed:
-                if service.save_duty(entry['room'], entry['date'], entry['notes']):
+                result = service.save_duty(entry['room'], entry['date'], entry['notes'])
+                if result and result['action'] in ['created', 'updated']:
                     count += 1
                     batch_count += 1
             print(f"Батч {i // batch_size + 1}: LLM нашёл {len(parsed)}, сохранено/обновлено {batch_count}")
+            time.sleep(3)
 
         return count

@@ -10,3 +10,6 @@ class Config:
     DB_URL = os.getenv("DATABASE_URL")
     CHAT_ID = int(os.getenv("TARGET_CHAT_ID"))
     TZ = os.getenv("TIMEZONE", "Europe/Minsk")
+    SYNC_TOKEN = os.getenv("SYNC_TOKEN", "")
+    SYNC_HOUR = int(os.getenv("SYNC_HOUR", "23"))
+    SYNC_MINUTE = int(os.getenv("SYNC_MINUTE", "30"))

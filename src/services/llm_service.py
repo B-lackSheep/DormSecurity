@@ -1,3 +1,4 @@
+import time
 from google import genai
 import json
 import logging
@@ -43,20 +44,23 @@ class LLMService:
         ТЕКСТ:
         {text}
         """
-        try:
-            response = self.client.models.generate_content(
-                model=self.model_id,
-                contents=prompt
-            )
-
-            if not response.text:
-                return []
-
-            clean_json = response.text.strip()
-            if clean_json.startswith("```"):
-                clean_json = clean_json.split("```json")[-1].split("```")[0].strip()
-
-            return json.loads(clean_json)
-        except Exception as e:
-            logging.error(f"LLM Parsing Error: {e}")
-            return []
+        for attempt in range(4):
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model_id,
+                    contents=prompt
+                )
+                if not response.text:
+                    return []
+                clean_json = response.text.strip()
+                if clean_json.startswith("```"):
+                    clean_json = clean_json.split("```json")[-1].split("```")[0].strip()
+                return json.loads(clean_json)
+            except Exception as e:
+                if "503" in str(e) and attempt < 2:
+                    wait = 15 * (attempt + 1)
+                    logging.warning(f"LLM 503, повтор через {wait} сек... ({attempt + 1}/4)")
+                    time.sleep(wait)
+                else:
+                    logging.error(f"LLM Parsing Error: {e}")
+                    return []

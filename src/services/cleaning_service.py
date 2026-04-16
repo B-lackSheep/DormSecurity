@@ -23,15 +23,19 @@ class CleaningService:
 
         if existing:
             if parsed_date > existing.date:
+                old_date = existing.date
                 existing.date = parsed_date
                 existing.notes = notes
                 self.db.commit()
-            return existing
+                return {"action": "updated", "room": room_number, "old_date": old_date, "new_date": parsed_date, "notes": notes}
+            else:
+                reason = "same_date" if parsed_date == existing.date else "older_date"
+                return {"action": "skipped", "room": room_number, "date": existing.date, "reason": reason}
 
         new_log = CleaningLog(room_id=room.id, date=parsed_date, notes=notes)
         self.db.add(new_log)
         self.db.commit()
-        return new_log
+        return {"action": "created", "room": room_number, "date": parsed_date, "notes": notes}
 
     def count_rooms_on_floor(self, floor: int) -> int:
         from sqlalchemy import text

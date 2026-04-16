@@ -6,3 +6,4 @@ apscheduler
 google-genai
 fastapi
 uvicorn
+openpyxl

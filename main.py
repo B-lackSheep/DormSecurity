@@ -1,15 +1,17 @@
 import logging
 import asyncio
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from src.config import Config
 from src.database import get_db_session
 from src.services.llm_service import LLMService
 from src.services.cleaning_service import CleaningService
+from src.services.daily_sync_service import DailySyncService
 from src.bot.manager import TelegramManager
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 bot_manager = TelegramManager()
 llm = LLMService()
@@ -47,31 +49,32 @@ async def on_forecast_request(message, floor: int = None, extra: int = 0):
 
 
 async def daily_sync():
-    raw_text = bot_manager.flush_buffer()
-    if not raw_text:
-        return
-    parsed_rooms = llm.parse_logs_with_dates(raw_text)
-    with get_db_session() as session:
-        service = CleaningService(session)
-        for entry in parsed_rooms:
-            service.save_duty(entry['room'], entry['date'], entry['notes'])
-    logging.info(f"Daily sync completed: {len(parsed_rooms)} rooms saved.")
+    """Ежедневная синхронизация сообщений за сегодня"""
+    try:
+        with get_db_session() as session:
+            sync_service = DailySyncService(session)
+            count = await sync_service.sync_today_messages(bot_manager)
+            logger.info(f"Ежедневная синхронизация завершена успешно: {count} записей")
+    except Exception as e:
+        logger.error(f"Ошибка при ежедневной синхронизации: {e}")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler = AsyncIOScheduler(timezone=Config.TZ)
-    scheduler.add_job(daily_sync, 'cron', hour=23, minute=30)
+    scheduler.add_job(daily_sync, 'cron', hour=Config.SYNC_HOUR, minute=Config.SYNC_MINUTE)
     scheduler.start()
+    logger.info(f"Планировщик запущен: ежедневная синхронизация в {Config.SYNC_HOUR:02d}:{Config.SYNC_MINUTE:02d}")
 
     bot_manager.setup_handlers(on_forecast_request)
     await bot_manager.app.start()
-    logging.info("Bot started.")
+    logger.info("Бот запущен")
 
     yield
 
     await bot_manager.app.stop()
     scheduler.shutdown()
+    logger.info("Приложение остановлено")
 
 
 app = FastAPI(lifespan=lifespan)
@@ -82,3 +85,15 @@ app = FastAPI(lifespan=lifespan)
 @app.post("/")
 def healthcheck():
     return {"status": "ok"}
+
+
+@app.post("/sync")
+async def sync_history(x_token: str = Header(None)):
+    if x_token != Config.SYNC_TOKEN:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    from src.services.admin_service import AdminService
+    from src.database import get_db_session
+    with get_db_session() as session:
+        admin = AdminService(session)
+        count = await admin.sync_history(bot_manager, limit=300)
+    return {"synced": count}
