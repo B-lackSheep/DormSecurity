@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="added automatic update of bd">
-      <change afterPath="$PROJECT_DIR$/get_session.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
+    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="new db + get_session.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/get_session.py" beforeDir="false" afterPath="$PROJECT_DIR$/get_session.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +56,7 @@
     "Python.cleanup_duplicates.executor": "Run",
     "Python.cleanup_logs.executor": "Run",
     "Python.debug_dates.executor": "Run",
+    "Python.delete_room.executor": "Run",
     "Python.export_session.executor": "Run",
     "Python.generate_schedule.executor": "Run",
     "Python.get_id.executor": "Run",
@@ -148,7 +148,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776348717810</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="new db + get_session.py">
+      <option name="closed" value="true" />
+      <created>1776537272082</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1776537272082</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -159,6 +167,7 @@
     <MESSAGE value="fixing session problems" />
     <MESSAGE value="added head to app" />
     <MESSAGE value="added automatic update of bd" />
-    <option name="LAST_COMMIT_MESSAGE" value="added automatic update of bd" />
+    <MESSAGE value="new db + get_session.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="new db + get_session.py" />
   </component>
 </project>
