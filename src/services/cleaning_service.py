@@ -28,8 +28,17 @@ class CleaningService:
                 existing.notes = notes
                 self.db.commit()
                 return {"action": "updated", "room": room_number, "old_date": old_date, "new_date": parsed_date, "notes": notes}
+            elif parsed_date == existing.date:
+                # Обновляем заметки, если они различаются
+                if existing.notes != notes:
+                    old_notes = existing.notes
+                    existing.notes = notes
+                    self.db.commit()
+                    return {"action": "notes_updated", "room": room_number, "date": parsed_date, "old_notes": old_notes, "new_notes": notes}
+                else:
+                    return {"action": "skipped", "room": room_number, "date": existing.date, "reason": "same_date_same_notes"}
             else:
-                reason = "same_date" if parsed_date == existing.date else "older_date"
+                reason = "older_date"
                 return {"action": "skipped", "room": room_number, "date": existing.date, "reason": reason}
 
         new_log = CleaningLog(room_id=room.id, date=parsed_date, notes=notes)

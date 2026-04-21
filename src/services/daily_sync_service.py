@@ -85,6 +85,9 @@ class DailySyncService:
                         elif result['action'] == 'updated':
                             batch_updated += 1
                             logger.info(f"  ↻ Обновлена запись: комната {result['room']}, {result['old_date']} → {result['new_date']}, заметка: {result['notes']}")
+                        elif result['action'] == 'notes_updated':
+                            batch_updated += 1
+                            logger.info(f"  📝 Обновлены заметки: комната {result['room']}, дата {result['date']}, '{result.get('old_notes', '')}' → '{result['new_notes']}'")
                         elif result['action'] == 'skipped':
                             batch_skipped += 1
                             logger.info(f"  ⊘ Пропущена запись: комната {result['room']}, дата {result['date']} (причина: {result['reason']})")
