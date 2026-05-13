@@ -14,7 +14,7 @@ async def run_sync():
     with get_db_session() as session:
         admin = AdminService(session)
 
-        count = await admin.sync_history(bot, limit=195)
+        count = await admin.sync_history(bot, limit=90)
 
         print(f"--- Успех! Добавлено записей: {count} ---")
 

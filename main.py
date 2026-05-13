@@ -48,6 +48,23 @@ async def on_forecast_request(message, floor: int = None, extra: int = 0):
         await message.reply(response)
 
 
+async def keep_connection_alive():
+    """Поддерживает соединение с Telegram активным"""
+    try:
+        me = await bot_manager.app.get_me()
+        logger.info(f"Проверка соединения: бот @{me.username} активен")
+    except Exception as e:
+        logger.error(f"Ошибка проверки соединения: {e}")
+        # Пытаемся переподключиться
+        try:
+            await bot_manager.app.stop()
+            await asyncio.sleep(5)
+            await bot_manager.app.start()
+            logger.info("Соединение с Telegram восстановлено")
+        except Exception as reconnect_error:
+            logger.error(f"Не удалось восстановить соединение: {reconnect_error}")
+
+
 async def daily_sync():
     """Ежедневная синхронизация сообщений за сегодня"""
     try:
@@ -62,18 +79,40 @@ async def daily_sync():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler = AsyncIOScheduler(timezone=Config.TZ)
+    
+    # Ежедневная синхронизация
     scheduler.add_job(daily_sync, 'cron', hour=Config.SYNC_HOUR, minute=Config.SYNC_MINUTE)
+    
+    # Поддержание соединения каждые 30 минут
+    scheduler.add_job(keep_connection_alive, 'interval', minutes=30)
+    
     scheduler.start()
     logger.info(f"Планировщик запущен: ежедневная синхронизация в {Config.SYNC_HOUR:02d}:{Config.SYNC_MINUTE:02d}")
+    logger.info("Проверка соединения каждые 30 минут")
 
     bot_manager.setup_handlers(on_forecast_request)
-    await bot_manager.app.start()
-    logger.info("Бот запущен")
+    
+    try:
+        await bot_manager.app.start()
+        logger.info("Бот запущен")
+    except Exception as e:
+        logger.error(f"Ошибка запуска бота: {e}")
 
     yield
 
-    await bot_manager.app.stop()
-    scheduler.shutdown()
+    # Безопасная остановка бота
+    try:
+        await bot_manager.app.stop()
+        logger.info("Бот остановлен")
+    except Exception as e:
+        logger.error(f"Ошибка при остановке бота: {e}")
+    
+    try:
+        scheduler.shutdown()
+        logger.info("Планировщик остановлен")
+    except Exception as e:
+        logger.error(f"Ошибка при остановке планировщика: {e}")
+    
     logger.info("Приложение остановлено")
 
 

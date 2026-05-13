@@ -11,10 +11,16 @@ class TelegramManager:
                 "sb_userbot",
                 api_id=Config.API_ID,
                 api_hash=Config.API_HASH,
-                session_string=session
+                session_string=session,
+                ipv6=False  # Отключаем IPv6
             )
         else:
-            self.app = Client("sb_userbot", api_id=Config.API_ID, api_hash=Config.API_HASH)
+            self.app = Client(
+                "sb_userbot", 
+                api_id=Config.API_ID, 
+                api_hash=Config.API_HASH,
+                ipv6=False  # Отключаем IPv6
+            )
 
     def setup_handlers(self, on_forecast_request):
         @self.app.on_message(filters.chat(Config.CHAT_ID) & (filters.command(["next", "очередь"]) | filters.regex(r"^\.очередь")))
