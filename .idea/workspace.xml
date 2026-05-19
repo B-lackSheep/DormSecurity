@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="fixed noting + logging">
+    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="fixed connecting with Telegram">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_tool.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/manager.py" afterDir="false" />
     </list>
@@ -59,10 +58,12 @@
     &quot;Python.cleanup_logs.executor&quot;: &quot;Run&quot;,
     &quot;Python.debug_dates.executor&quot;: &quot;Run&quot;,
     &quot;Python.delete_room.executor&quot;: &quot;Run&quot;,
+    &quot;Python.export_database.executor&quot;: &quot;Run&quot;,
     &quot;Python.export_session.executor&quot;: &quot;Run&quot;,
     &quot;Python.generate_schedule.executor&quot;: &quot;Run&quot;,
     &quot;Python.get_id.executor&quot;: &quot;Run&quot;,
     &quot;Python.get_session.executor&quot;: &quot;Run&quot;,
+    &quot;Python.import_database.executor&quot;: &quot;Run&quot;,
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.show_rooms.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_daily_sync.executor&quot;: &quot;Run&quot;,
@@ -73,7 +74,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/Python/DormSecurity/photo_2026-05-03_22-23-22.jpg&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;aws.codewhisperer&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -177,7 +178,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776752003008</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="fixed connecting with Telegram">
+      <option name="closed" value="true" />
+      <created>1778708582323</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1778708582323</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -191,6 +200,7 @@
     <MESSAGE value="new db + get_session.py" />
     <MESSAGE value="fixed get_session.py" />
     <MESSAGE value="fixed noting + logging" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed noting + logging" />
+    <MESSAGE value="fixed connecting with Telegram" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed connecting with Telegram" />
   </component>
 </project>

@@ -24,6 +24,7 @@ MONTHS_RU = [
 
 
 async def on_forecast_request(message, floor: int = None, extra: int = 0):
+    logger.info(f"Обработка запроса очереди: этаж={floor}, доп={extra}")
     with get_db_session() as session:
         service = CleaningService(session)
 
@@ -46,6 +47,7 @@ async def on_forecast_request(message, floor: int = None, extra: int = 0):
             response += f"{i}. Комната {room_number} (была: {date_str}){notes_str}\n"
 
         await message.reply(response)
+        logger.info(f"Отправлен ответ с {len(queue)} комнатами")
 
 
 async def keep_connection_alive():
