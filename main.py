@@ -8,12 +8,11 @@ from src.database import get_db_session
 from src.services.llm_service import LLMService
 from src.services.cleaning_service import CleaningService
 from src.services.daily_sync_service import DailySyncService
-from src.bot.manager import TelegramManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-bot_manager = TelegramManager()
+bot_manager = None
 llm = LLMService()
 
 MONTHS_RU = [
@@ -80,6 +79,12 @@ async def daily_sync():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global bot_manager
+    
+    # Импортируем и создаем TelegramManager только после создания event loop
+    from src.bot.manager import TelegramManager
+    bot_manager = TelegramManager()
+    
     scheduler = AsyncIOScheduler(timezone=Config.TZ)
     
     # Ежедневная синхронизация

@@ -1,13 +1,18 @@
 import os
 import logging
-from pyrogram import Client, filters
-from pyrogram.storage import MemoryStorage
 from ..config import Config
 
 logger = logging.getLogger(__name__)
 
 class TelegramManager:
     def __init__(self):
+        # Отложенный импорт Pyrogram
+        from pyrogram import Client, filters
+        from pyrogram.storage import MemoryStorage
+        
+        self.Client = Client
+        self.filters = filters
+        
         session = os.getenv("SESSION_STRING")
         if session:
             self.app = Client(
@@ -29,12 +34,12 @@ class TelegramManager:
     def setup_handlers(self, on_forecast_request):
         logger.info(f"Настройка обработчиков для чата {Config.CHAT_ID}")
         
-        @self.app.on_message(filters.chat(Config.CHAT_ID) & filters.text & ~filters.command(["next", "очередь"]))
+        @self.app.on_message(self.filters.chat(Config.CHAT_ID) & self.filters.text & ~self.filters.command(["next", "очередь"]))
         async def catch_message(client, message):
             self.buffer.append(f"[{message.date}] {message.text}")
             logger.debug(f"Сохранено сообщение в буфер: {message.text[:50]}...")
 
-        @self.app.on_message(filters.chat(Config.CHAT_ID) & (filters.command(["next", "очередь"]) | filters.regex(r"^\.очередь")))
+        @self.app.on_message(self.filters.chat(Config.CHAT_ID) & (self.filters.command(["next", "очередь"]) | self.filters.regex(r"^\.очередь")))
         async def send_forecast(client, message):
             logger.info(f"Получена команда: {message.text}")
             parts = message.text.strip().split()
