@@ -1,7 +1,6 @@
 pyrogram==2.0.97
 sqlalchemy==2.0.49
-psycopg2-binary
-asyncopg
+asyncpg
 python-dotenv
 apscheduler
 google-genai

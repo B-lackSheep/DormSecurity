@@ -1,5 +1,5 @@
 import asyncio
-from src.database import get_db_session
+from src.database import get_async_db_session
 from src.services.admin_service import AdminService
 from src.bot.manager import TelegramManager
 
@@ -11,7 +11,7 @@ async def run_sync():
 
     print("--- Начало синхронизации истории ---")
 
-    with get_db_session() as session:
+    async with get_async_db_session() as session:
         admin = AdminService(session)
 
         count = await admin.sync_history(bot, limit=90)
