@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Header, HTTPException
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from src.config import Config
-from src.database import get_db_session
+from src.database import get_async_db_session, init_db
 from src.services.llm_service import LLMService
 from src.services.cleaning_service import CleaningService
 from src.services.daily_sync_service import DailySyncService
@@ -24,20 +24,20 @@ MONTHS_RU = [
 
 async def on_forecast_request(message, floor: int = None, extra: int = 0):
     logger.info(f"Обработка запроса очереди: этаж={floor}, доп={extra}")
-    with get_db_session() as session:
+    async with get_async_db_session() as session:
         service = CleaningService(session)
 
         if floor is None:
             await message.reply("Укажите этаж, например: /очередь 3")
             return
 
-        total_rooms = service.count_rooms_on_floor(floor)
+        total_rooms = await service.count_rooms_on_floor(floor)
         if total_rooms == 0:
             await message.reply(f"На {floor} этаже нет данных.")
             return
 
         limit = min(5 + extra, total_rooms)
-        queue = service.get_forecast_by_floor(floor, limit=limit)
+        queue = await service.get_forecast_by_floor(floor, limit=limit)
 
         response = f"Очередь на {floor} этаже ({limit} из {total_rooms}):\n"
         for i, (room_number, last_date, notes) in enumerate(queue, 1):
@@ -69,7 +69,7 @@ async def keep_connection_alive():
 async def daily_sync():
     """Ежедневная синхронизация сообщений за сегодня"""
     try:
-        with get_db_session() as session:
+        async with get_async_db_session() as session:
             sync_service = DailySyncService(session)
             count = await sync_service.sync_today_messages(bot_manager)
             logger.info(f"Ежедневная синхронизация завершена успешно: {count} записей")
@@ -80,6 +80,10 @@ async def daily_sync():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global bot_manager
+    
+    # Инициализируем базу данных
+    await init_db()
+    logger.info("База данных инициализирована")
     
     # Импортируем и создаем TelegramManager только после создания event loop
     from src.bot.manager import TelegramManager
@@ -138,8 +142,7 @@ async def sync_history(x_token: str = Header(None)):
     if x_token != Config.SYNC_TOKEN:
         raise HTTPException(status_code=403, detail="Forbidden")
     from src.services.admin_service import AdminService
-    from src.database import get_db_session
-    with get_db_session() as session:
+    async with get_async_db_session() as session:
         admin = AdminService(session)
         count = await admin.sync_history(bot_manager, limit=300)
     return {"synced": count}

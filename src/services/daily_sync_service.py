@@ -1,7 +1,7 @@
 import logging
 import re
 from datetime import datetime, date
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from ..models.db_models import Room, CleaningLog
 from .llm_service import LLMService
 from .cleaning_service import CleaningService
@@ -10,7 +10,7 @@ from ..config import Config
 logger = logging.getLogger(__name__)
 
 class DailySyncService:
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
         self.llm = LLMService()
         self.cleaning_service = CleaningService(db)
@@ -77,7 +77,7 @@ class DailySyncService:
                 batch_skipped = 0
                 
                 for entry in parsed:
-                    result = self.cleaning_service.save_duty(entry['room'], entry['date'], entry['notes'])
+                    result = await self.cleaning_service.save_duty(entry['room'], entry['date'], entry['notes'])
                     if result:
                         if result['action'] == 'created':
                             batch_saved += 1
@@ -90,7 +90,7 @@ class DailySyncService:
                             logger.info(f"  📝 Обновлены заметки: комната {result['room']}, дата {result['date']}, '{result.get('old_notes', '')}' → '{result['new_notes']}'")
                         elif result['action'] == 'skipped':
                             batch_skipped += 1
-                            logger.info(f"  ⊘ Пропущена запись: комната {result['room']}, дата {result['date']} (причина: {result['reason']})")
+                            logger.info(f"  ⊚ Пропущена запись: комната {result['room']}, дата {result['date']} (причина: {result['reason']})")
                         
                 total_saved += batch_saved
                 total_updated += batch_updated

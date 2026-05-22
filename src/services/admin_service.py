@@ -1,7 +1,8 @@
 import re
 import time
 from datetime import date
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from ..models.db_models import Room, CleaningLog
 from .llm_service import LLMService
 from .cleaning_service import CleaningService
@@ -9,22 +10,28 @@ from ..config import Config
 
 
 class AdminService:
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def update_room_date(self, room_number: int, new_date: date):
-        room = self.db.query(Room).filter(Room.room_number == room_number).first()
-        if not room: return "Комната не найдена"
+    async def update_room_date(self, room_number: int, new_date: date):
+        stmt = select(Room).where(Room.room_number == room_number)
+        result = await self.db.execute(stmt)
+        room = result.scalar_one_or_none()
+        
+        if not room: 
+            return "Комната не найдена"
 
-        last_log = self.db.query(CleaningLog).filter(CleaningLog.room_id == room.id).order_by(
-            CleaningLog.date.desc()).first()
+        stmt = select(CleaningLog).where(CleaningLog.room_id == room.id).order_by(CleaningLog.date.desc())
+        result = await self.db.execute(stmt)
+        last_log = result.scalar_one_or_none()
+        
         if last_log:
             last_log.date = new_date
         else:
             last_log = CleaningLog(room_id=room.id, date=new_date, notes="Ручная корректировка")
             self.db.add(last_log)
 
-        self.db.commit()
+        await self.db.commit()
         return f"Обновлено: {room_number} теперь имеет дату {new_date}"
 
     async def sync_history(self, bot_manager, limit: int = 195):
@@ -67,7 +74,7 @@ class AdminService:
                 continue
             batch_count = 0
             for entry in parsed:
-                result = service.save_duty(entry['room'], entry['date'], entry['notes'])
+                result = await service.save_duty(entry['room'], entry['date'], entry['notes'])
                 if result and result['action'] in ['created', 'updated', 'notes_updated']:
                     count += 1
                     batch_count += 1
