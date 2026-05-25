@@ -7,7 +7,7 @@ from ..config import Config
 
 class LLMService:
     def __init__(self):
-        self.model_id = "gemini-3.1-flash-lite-preview"
+        self.model_id = "gemini-3.1-flash-lite"
         self.client = genai.Client(api_key=Config.GEMINI_KEY)
 
     def parse_logs_with_dates(self, text: str):
