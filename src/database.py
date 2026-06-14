@@ -6,7 +6,6 @@ from .config import Config
 class Base(DeclarativeBase):
     pass
 
-# Создаем асинхронный движок
 engine = create_async_engine(
     Config.DB_URL.replace('postgresql://', 'postgresql+asyncpg://'),
     pool_size=5,           

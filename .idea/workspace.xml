@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="fixed db">
+    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="fixing ssl requirement">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/llm_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/llm_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +64,7 @@
     "Python.get_id.executor": "Run",
     "Python.get_session.executor": "Run",
     "Python.import_database.executor": "Run",
+    "Python.import_tar_backup.executor": "Run",
     "Python.main.executor": "Run",
     "Python.show_rooms.executor": "Run",
     "Python.test_daily_sync.executor": "Run",
@@ -80,6 +80,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Python\DormSecurity" />
       <recent name="D:\Python\DormSecurity\src" />
     </key>
   </component>

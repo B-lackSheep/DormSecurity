@@ -9,8 +9,7 @@ class Room(Base):
     id = Column(Integer, primary_key=True)
     room_number = Column(Integer, unique=True, nullable=False)
     floor = Column(Integer)
-    
-    # Связь с логами уборки
+
     cleaning_logs = relationship("CleaningLog", back_populates="room")
 
 
