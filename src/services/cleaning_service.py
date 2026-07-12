@@ -14,7 +14,7 @@ class CleaningService:
         stmt = select(Room).where(Room.room_number == room_number)
         result = await self.db.execute(stmt)
         room = result.scalar_one_or_none()
-        
+
         if not room:
             floor = int(str(room_number)[0])
             room = Room(room_number=room_number, floor=floor)
@@ -28,30 +28,39 @@ class CleaningService:
         result = await self.db.execute(stmt)
         existing = result.scalar_one_or_none()
 
+        # Очищаем входящую заметку от пробелов для надежной проверки
+        clean_notes = notes.strip() if notes else ""
+
         if existing:
             if parsed_date > existing.date:
                 old_date = existing.date
                 existing.date = parsed_date
-                existing.notes = notes
+
+                if clean_notes:
+                    existing.notes = clean_notes
+
                 await self.db.commit()
-                return {"action": "updated", "room": room_number, "old_date": old_date, "new_date": parsed_date, "notes": notes}
+                return {"action": "updated", "room": room_number, "old_date": old_date, "new_date": parsed_date,
+                        "notes": existing.notes}
+
             elif parsed_date == existing.date:
-                # Обновляем заметки, если они различаются
-                if existing.notes != notes:
+                if clean_notes and existing.notes != clean_notes:
                     old_notes = existing.notes
-                    existing.notes = notes
+                    existing.notes = clean_notes
                     await self.db.commit()
-                    return {"action": "notes_updated", "room": room_number, "date": parsed_date, "old_notes": old_notes, "new_notes": notes}
+                    return {"action": "notes_updated", "room": room_number, "date": parsed_date, "old_notes": old_notes,
+                            "new_notes": clean_notes}
                 else:
-                    return {"action": "skipped", "room": room_number, "date": existing.date, "reason": "same_date_same_notes"}
+                    return {"action": "skipped", "room": room_number, "date": existing.date,
+                            "reason": "same_date_no_new_notes"}
             else:
                 reason = "older_date"
                 return {"action": "skipped", "room": room_number, "date": existing.date, "reason": reason}
 
-        new_log = CleaningLog(room_id=room.id, date=parsed_date, notes=notes)
+        new_log = CleaningLog(room_id=room.id, date=parsed_date, notes=clean_notes)
         self.db.add(new_log)
         await self.db.commit()
-        return {"action": "created", "room": room_number, "date": parsed_date, "notes": notes}
+        return {"action": "created", "room": room_number, "date": parsed_date, "notes": clean_notes}
 
     async def count_rooms_on_floor(self, floor: int) -> int:
         stmt = text("""

@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="fixing ssl requirement">
+    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="a little fix db">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,6 +55,8 @@
     "Python.cleanup_bad_dates.executor": "Run",
     "Python.cleanup_duplicates.executor": "Run",
     "Python.cleanup_logs.executor": "Run",
+    "Python.create_room.executor": "Run",
+    "Python.create_session.executor": "Run",
     "Python.debug_dates.executor": "Run",
     "Python.delete_room.executor": "Run",
     "Python.export_database.executor": "Run",
@@ -74,7 +76,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Python/DormSecurity/photo_2026-05-03_22-23-22.jpg",
+    "last_opened_file_path": "D:/Python/Practice07.25",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
@@ -228,7 +230,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779477473721</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="a little fix db">
+      <option name="closed" value="true" />
+      <created>1781470334874</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1781470334875</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -247,6 +257,7 @@
     <MESSAGE value="added runtime file for editing python version" />
     <MESSAGE value="fixing troubles with deploying" />
     <MESSAGE value="fixed db" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed db" />
+    <MESSAGE value="a little fix db" />
+    <option name="LAST_COMMIT_MESSAGE" value="a little fix db" />
   </component>
 </project>
