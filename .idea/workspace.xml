@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="a little fix db">
+    <list default="true" id="40fbe639-9087-407d-a840-214adea42576" name="Changes" comment="cleaning_service.py notes fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,40 +46,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.admin_tool.executor": "Run",
-    "Python.check_ai_models.executor": "Run",
-    "Python.check_db.executor": "Run",
-    "Python.check_models.executor": "Run",
-    "Python.cleanup_bad_dates.executor": "Run",
-    "Python.cleanup_duplicates.executor": "Run",
-    "Python.cleanup_logs.executor": "Run",
-    "Python.create_room.executor": "Run",
-    "Python.create_session.executor": "Run",
-    "Python.debug_dates.executor": "Run",
-    "Python.delete_room.executor": "Run",
-    "Python.export_database.executor": "Run",
-    "Python.export_session.executor": "Run",
-    "Python.find_chats.executor": "Run",
-    "Python.generate_schedule.executor": "Run",
-    "Python.get_id.executor": "Run",
-    "Python.get_session.executor": "Run",
-    "Python.import_database.executor": "Run",
-    "Python.import_tar_backup.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.show_rooms.executor": "Run",
-    "Python.test_daily_sync.executor": "Run",
-    "Python.test_forecast.executor": "Run",
-    "Python.test_yesterday_sync.executor": "Run",
-    "Python.update_room.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Python/Practice07.25",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.admin_tool.executor&quot;: &quot;Run&quot;,
+    &quot;Python.check_ai_models.executor&quot;: &quot;Run&quot;,
+    &quot;Python.check_db.executor&quot;: &quot;Run&quot;,
+    &quot;Python.check_models.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cleanup_bad_dates.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cleanup_duplicates.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cleanup_logs.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create_room.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create_session.executor&quot;: &quot;Run&quot;,
+    &quot;Python.debug_dates.executor&quot;: &quot;Run&quot;,
+    &quot;Python.delete_room.executor&quot;: &quot;Run&quot;,
+    &quot;Python.export_database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.export_session.executor&quot;: &quot;Run&quot;,
+    &quot;Python.find_chats.executor&quot;: &quot;Run&quot;,
+    &quot;Python.generate_schedule.executor&quot;: &quot;Run&quot;,
+    &quot;Python.get_id.executor&quot;: &quot;Run&quot;,
+    &quot;Python.get_session.executor&quot;: &quot;Run&quot;,
+    &quot;Python.import_database.executor&quot;: &quot;Run&quot;,
+    &quot;Python.import_tar_backup.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.show_rooms.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_daily_sync.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_forecast.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_yesterday_sync.executor&quot;: &quot;Run&quot;,
+    &quot;Python.update_room.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Python/Practice07.25&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Python\DormSecurity" />
@@ -238,7 +238,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781470334875</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="cleaning_service.py notes fix">
+      <option name="closed" value="true" />
+      <created>1783865562771</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1783865562771</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -258,6 +266,7 @@
     <MESSAGE value="fixing troubles with deploying" />
     <MESSAGE value="fixed db" />
     <MESSAGE value="a little fix db" />
-    <option name="LAST_COMMIT_MESSAGE" value="a little fix db" />
+    <MESSAGE value="cleaning_service.py notes fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleaning_service.py notes fix" />
   </component>
 </project>
