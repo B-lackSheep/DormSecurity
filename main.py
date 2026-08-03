@@ -43,7 +43,7 @@ async def on_forecast_request(message, floor: int = None, extra: int = 0):
         for i, (room_number, last_date, notes) in enumerate(queue, 1):
             date_str = f"{last_date.day} {MONTHS_RU[last_date.month]}" if last_date else "ещё не дежурила"
             notes_str = f" — {notes}" if notes else ""
-            response += f"{i}. Комната {room_number} (была: {date_str}){notes_str}\n"
+            response += f"{i}. Комната <b>{room_number}</b> (была: {date_str}){notes_str}\n"
 
         await message.reply(response)
         logger.info(f"Отправлен ответ с {len(queue)} комнатами")
